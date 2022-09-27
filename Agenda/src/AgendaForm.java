@@ -1,5 +1,9 @@
 
 import javax.swing.*;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.*;
@@ -24,6 +28,9 @@ public class AgendaForm extends JFrame {
     private JTable tableDataViewer;
     private DefaultTableModel myDefaultTableModel;
     private JScrollPane myScrollPane;
+    //
+    private int rowToDelete;
+    boolean rowWasSelected = false;
 
     public AgendaForm(){
         this.InitComponents();
@@ -124,11 +131,45 @@ public class AgendaForm extends JFrame {
                     arrLstDatos.add(agenda);
                     LoadContactsToTable(name, phoneNumber, email, group);
                     ClearItems();
+                    rowWasSelected = false;
                 }
             }
         });
         btnAddContact.setFocusPainted(false);
         add(btnAddContact);
+
+        btnDeleteContact = new JButton("Eliminar");
+        btnDeleteContact.setBounds(300, 200, 100, 30);
+        btnDeleteContact.setFont(new Font("Arial", 0, 12));
+        btnDeleteContact.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                int selectedOption = 0;
+
+                selectedOption = JOptionPane.showConfirmDialog(null,
+                        "Continuar",
+                        "Atencion",
+                        JOptionPane.YES_NO_OPTION
+                );
+
+                if(rowWasSelected && tableDataViewer.getRowCount() > 0){
+                    if(selectedOption == 0){
+                        DeleteContact(rowToDelete);
+                        arrLstDatos.remove(rowToDelete);
+                    }
+                    else
+                        JOptionPane.showMessageDialog(null, "Cancelado");
+                }else{
+                    JOptionPane.showMessageDialog(null,
+                            "Nada seleccionado para eliminar",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE
+                    );
+                }
+            }
+        });
+        btnDeleteContact.setFocusPainted(false);
+        add(btnDeleteContact);
     }
 
     private void InitTable(){
@@ -141,6 +182,23 @@ public class AgendaForm extends JFrame {
         myDefaultTableModel.addColumn("Grupo");
 
         tableDataViewer.setModel(myDefaultTableModel);
+
+        tableDataViewer.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                rowWasSelected = true;
+                rowToDelete = tableDataViewer.getSelectedRow();
+            }
+        });
+
+        tableDataViewer.getModel().addTableModelListener(new TableModelListener() {
+            @Override
+            public void tableChanged(TableModelEvent e) {
+                if(e.getType() == TableModelEvent.UPDATE){
+                    JOptionPane.showMessageDialog(null, "Actualizado");
+                }
+            }
+        });
 
         myScrollPane = new JScrollPane(tableDataViewer);
         myScrollPane.setBounds(20, 250, 450, 200);
@@ -155,6 +213,10 @@ public class AgendaForm extends JFrame {
                 group
             }
         );
+    }
+
+    private void DeleteContact(int rowToDelete){
+        tableDataViewer.remove(rowToDelete);
     }
 
     private void ClearItems(){
