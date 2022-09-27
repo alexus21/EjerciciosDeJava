@@ -22,17 +22,20 @@ public class FormSalario extends JFrame {
     private DefaultTableModel defaultTableModel;
     public FormSalario() {
         this.setLayout(null); //Lo asigno a null para que no me de problemas de ubicacion de componentes
+        this.InitComponents();
+        this.setSize(520, 500);
+        this.setTitle("Calcular salario del empleado");
+        this.setLocationRelativeTo(null);
+        this.setVisible(true);
+        this.setResizable(false);
+        this.setDefaultCloseOperation(EXIT_ON_CLOSE);
+    }
+    private void InitComponents(){
         this.initLabels(); //Cargar el "generador" de labels
         this.initTextFields(); //Cargar el generador de text fields
         this.initComboBoxes(); //Cargar el generador de JComboBox
         this.initButtons();
         this.initTable();
-        this.setSize(520, 500);
-        this.setTitle("Calcular salario del empleadd");
-        this.setLocationRelativeTo(null);
-        this.setVisible(true);
-        this.setResizable(false);
-        this.setDefaultCloseOperation(EXIT_ON_CLOSE);
     }
 
     private void initLabels(){
@@ -101,7 +104,11 @@ public class FormSalario extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if(txtEmployeeName.getText().equals("") || txtEmployeeAmount.getText().equals("")){
-                    JOptionPane.showMessageDialog(null, "Error: ingrese los campos requeridos", "Advertencia", JOptionPane.WARNING_MESSAGE);
+                    JOptionPane.showMessageDialog(null,
+                            "Error: ingrese los campos requeridos",
+                            "Advertencia",
+                            JOptionPane.WARNING_MESSAGE
+                    );
                 }else{
                     String employeeName = txtEmployeeName.getText().trim();
                     String employeeAge = cmbEmployeeAge.getSelectedItem().toString();
@@ -131,7 +138,7 @@ public class FormSalario extends JFrame {
     }
 
     private void loadAgesToComboBox(){
-        for (int i = 20; i < 60; i++) {
+        for (int i = 20; i < 61; i++) {
             //Agregar las edades al JComboBox
             cmbEmployeeAge.addItem(i);
         }
@@ -166,6 +173,15 @@ public class FormSalario extends JFrame {
     }
 
     private void addNewRow(String name, String age, String civilStatus, String sex, double amount, double increment, double newAmount){
-        defaultTableModel.addRow(new Object[]{name, age, civilStatus, sex, amount, increment, newAmount});
+        defaultTableModel.addRow(new Object[]{
+                name,
+                age,
+                civilStatus,
+                sex,
+                amount,
+                increment,
+                newAmount
+            }
+        );
     }
 }
