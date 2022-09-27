@@ -148,15 +148,13 @@ public class AgendaForm extends JFrame {
     }
 
     private void LoadContactsToTable(String name, String phoneNumber, String email, String group){
-        for(DatosAgenda datos: arrLstDatos){
-            myDefaultTableModel.addRow(new Object[]{
-                    name,
-                    phoneNumber,
-                    email,
-                    group
-                }
-            );
-        }
+        myDefaultTableModel.addRow(new Object[]{
+                name,
+                phoneNumber,
+                email,
+                group
+            }
+        );
     }
 
     private void ClearItems(){
