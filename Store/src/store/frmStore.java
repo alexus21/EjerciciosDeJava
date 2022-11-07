@@ -53,10 +53,23 @@ public class frmStore extends javax.swing.JFrame {
         jScrollPane1.setViewportView(jTableDataViewer);
 
         btnEditData.setText("Editar");
+        btnEditData.setFocusable(false);
+        btnEditData.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditDataActionPerformed(evt);
+            }
+        });
 
         btnDeleteData.setText("Eliminar");
+        btnDeleteData.setFocusable(false);
+        btnDeleteData.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnDeleteDataActionPerformed(evt);
+            }
+        });
 
         btnSaveData.setText("Guardar");
+        btnSaveData.setFocusable(false);
         btnSaveData.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnSaveDataActionPerformed(evt);
@@ -116,18 +129,60 @@ public class frmStore extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSaveDataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSaveDataActionPerformed
+
         if(txtGetProductName.getText().trim().equals("") || txtGetProductPrice.getText().trim().equals("") || txtGetProviderName.getText().trim().equals("")){
             JOptionPane.showMessageDialog(null, "Error: faltan datos", "Pelotudo", JOptionPane.WARNING_MESSAGE);
         }else{
             String productname = txtGetProductName.getText().trim();
             float productprice = Float.parseFloat(txtGetProductPrice.getText().trim());
             String providername = txtGetProviderName.getText().trim();
-            
+
             InsertToDB.InsertValues(productname, productprice, providername);
         }
         UpdateTable();
         clearTextFields();
     }//GEN-LAST:event_btnSaveDataActionPerformed
+
+    private void btnEditDataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditDataActionPerformed
+
+        String selectedId = jTableDataViewer.getValueAt(jTableDataViewer.getSelectedRow(), 4).toString();
+        String productName = jTableDataViewer.getValueAt(jTableDataViewer.getSelectedRow(), 1).toString();
+        String productPrice = jTableDataViewer.getValueAt(jTableDataViewer.getSelectedRow(), 2).toString();
+        String providerName = jTableDataViewer.getValueAt(jTableDataViewer.getSelectedRow(), 3).toString();
+
+        txtGetProductName.setText(productName);
+        txtGetProductPrice.setText(productPrice);
+        txtGetProviderName.setText(providerName);
+
+
+        if(txtGetProductName.getText().trim().equals("") || txtGetProductPrice.getText().trim().equals("") || txtGetProviderName.getText().trim().equals("")){
+            JOptionPane.showMessageDialog(null, "Error: faltan datos", "Pelotudo", JOptionPane.WARNING_MESSAGE);
+        }else{
+            String productname = txtGetProductName.getText().trim();
+            float productprice = Float.parseFloat(txtGetProductPrice.getText().trim());
+            String providername = txtGetProviderName.getText().trim();
+
+            try{
+                UpdateData.UpdateValues(selectedId, productname, productprice, providername);
+                JOptionPane.showMessageDialog(null, "Datos actualizados");
+            }catch(Exception ex){
+                JOptionPane.showMessageDialog(null, "Error: " + ex);
+            }
+        }
+        UpdateTable();
+        clearTextFields();
+    }
+
+    private void btnDeleteDataActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDeleteDataActionPerformed
+        String selectedId = jTableDataViewer.getValueAt(jTableDataViewer.getSelectedRow(), 4).toString();
+        try{
+            DeleteData.DeleteFromDB(selectedId);
+            UpdateTable();
+            JOptionPane.showMessageDialog(null, "Dato eliminado correctamente");
+        }catch(Exception ex){
+            JOptionPane.showMessageDialog(null, "Error: " + ex);
+        }
+    }
 
     public void UpdateTable(){
         DefaultTableModel myTableModel = new DefaultTableModel();
@@ -154,7 +209,7 @@ public class frmStore extends javax.swing.JFrame {
                 });
             }
         } catch (SQLException ex) {
-            System.out.println("Error: " + ex);
+            JOptionPane.showMessageDialog(null, "Error: " + ex);
         }
     }
     
